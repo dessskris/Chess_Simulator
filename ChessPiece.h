@@ -1,23 +1,64 @@
+#ifndef CHESSPIECE_H
+#define CHESSPIECE_H
+
+#include <iostream>
 #include <string>
 
 using namespace std;
 
+enum Colour {Black, White};
+enum Type {King, Queen, Bishop, Knight, Rook, Pawn};
+
 class ChessPiece {
- private:
-  Colour colour;
-  Type type;
- public:
-  ChessPiece();
-  ChessPiece(Type _t, Colour _c);
-  string get_colour();
-  string get_type();
-  virtual bool is_valid_move(const string source_square[3], const string destination_square[3]);
+protected:
+Type type;
+Colour colour;
+public:
+ChessPiece();
+ChessPiece(Type _t, Colour _c);
+~ChessPiece();
+string get_colour();
+string get_type();
+virtual bool is_valid_move(const string source_square, const string destination_square);
 };
 
 
-class King : public ChessPiece {
-
- public:
- King(Colour colour) : ChessPiece(0, colour);
+class KingPiece : public ChessPiece {
+public:
+KingPiece(Colour _c);
+bool is_valid_move(const string source_square, const string destination_square);
 };
 
+class QueenPiece : public ChessPiece {
+public:
+QueenPiece(Colour _c);
+bool is_valid_move(const string source_square, const string destination_square);
+};
+
+class BishopPiece : public ChessPiece {
+public:
+BishopPiece(Colour _c);
+bool is_valid_move(const string source_square, const string destination_square);
+};
+
+class KnightPiece : public ChessPiece {
+public:
+KnightPiece(Colour _c);
+bool is_valid_move(const string source_square, const string destination_square);
+};
+
+class RookPiece : public ChessPiece {
+public:
+RookPiece(Colour _c);
+bool is_valid_move(const string source_square, const string destination_square);
+};
+
+class PawnPiece : public ChessPiece {
+public:
+PawnPiece(Colour _c);
+bool is_valid_move(const string source_square, const string destination_square);
+};
+
+
+
+#endif

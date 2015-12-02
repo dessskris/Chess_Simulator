@@ -1,20 +1,28 @@
+#ifndef CHESSBOARD_H
+#define CHESSBOARD_H
+
 #include <map>
 #include <string>
+#include "ChessPiece.h"
 
 using namespace std;
 
-enum Colour {Black, White};
-enum Type {King, Queen, Bishop, Knight, Rook, Pawn};
 
 class ChessBoard {
  private:
-  map <char, ChessPiece> position;
-  Colour turn;
   ChessPiece *black_piece[16];
   ChessPiece *white_piece[16];
+  map <string, ChessPiece> position;
+  Colour turn;
+
   
  public:
   ChessBoard();
-  void submitMove(const string *source_square, const string *destination_square);
+  ~ChessBoard();
+  void InitialisePieces();
+  void InitialisePosition();
+  void submitMove(const string source_square, const string destination_square);
   void resetBoard();
 };
+
+#endif

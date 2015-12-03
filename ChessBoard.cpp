@@ -89,6 +89,10 @@ void ChessBoard::InitialisePosition() {
 void ChessBoard::submitMove(const string source_square, const string destination_square) {
   if (position[source_square].is_valid_move(position, source_square, destination_square))
     cout << "true";
+
+
+
+  // need to check if it's a pawn, first move needs to be updated if it has not moved yet
 }
 
 void ChessBoard::resetBoard() {

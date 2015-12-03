@@ -87,7 +87,8 @@ void ChessBoard::InitialisePosition() {
 }
 
 void ChessBoard::submitMove(const string source_square, const string destination_square) {
-  cout << "hi";
+  if (position[source_square].is_valid_move(position, source_square, destination_square))
+    cout << "true";
 }
 
 void ChessBoard::resetBoard() {

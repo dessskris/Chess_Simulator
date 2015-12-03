@@ -40,7 +40,7 @@ string ChessPiece::get_type() {
   }
 }
 
-bool ChessPiece::is_valid_move(const string source_square, const string destination_square) {
+bool ChessPiece::is_valid_move(map <string, ChessPiece> &chess_board, const string source_square, const string destination_square) {
   return 0;
 }
 
@@ -51,15 +51,19 @@ bool ChessPiece::is_valid_move(const string source_square, const string destinat
 KingPiece::KingPiece(Colour _c) : ChessPiece(King, colour) {
 }
 
-bool KingPiece::is_valid_move(const string source_square, const string destination_square) {
-  cout << "hi";
-  return 0;
+bool KingPiece::is_valid_move(map <string, ChessPiece> &chess_board, const string source_square, const string destination_square) {
+  // The king moves one square in any direction
+  if ( (abs(source_square[0] - destination_square[0]) == 1) &&
+       (abs(source_square[1] - destination_square[1]) == 1) )
+    return 1;
+  else
+    return 0;
 }
 
 QueenPiece::QueenPiece(Colour _c) : ChessPiece(Queen, colour) {
 }
 
-bool QueenPiece::is_valid_move(const string source_square, const string destination_square) {
+bool QueenPiece::is_valid_move(map <string, ChessPiece> &chess_board, const string source_square, const string destination_square) {
   cout << "hi";
   return 0;
 }
@@ -67,7 +71,7 @@ bool QueenPiece::is_valid_move(const string source_square, const string destinat
 BishopPiece::BishopPiece(Colour _c) : ChessPiece(Bishop, colour) {
 }
 
-bool BishopPiece::is_valid_move(const string source_square, const string destination_square) {
+bool BishopPiece::is_valid_move(map <string, ChessPiece> &chess_board, const string source_square, const string destination_square) {
   cout << "hi";
   return 0;
 }
@@ -75,7 +79,7 @@ bool BishopPiece::is_valid_move(const string source_square, const string destina
 KnightPiece::KnightPiece(Colour _c) : ChessPiece(Knight, colour) {
 }
 
-bool KnightPiece::is_valid_move(const string source_square, const string destination_square) {
+bool KnightPiece::is_valid_move(map <string, ChessPiece> &chess_board, const string source_square, const string destination_square) {
   cout << "hi";
   return 0;
 }
@@ -83,15 +87,21 @@ bool KnightPiece::is_valid_move(const string source_square, const string destina
 RookPiece::RookPiece(Colour _c) : ChessPiece(Rook, colour) {
 }
 
-bool RookPiece::is_valid_move(const string source_square, const string destination_square) {
-  cout << "hi";
+bool RookPiece::is_valid_move(map <string, ChessPiece> &chess_board, const string source_square, const string destination_square) {
+  // The rook can move any number of squares along any rank or file, but may not leap over other pieces.
+  if (source_square[0] == destination_square[0]) { // same file
+
+
+
+  }
+
   return 0;
 }
 
 PawnPiece::PawnPiece(Colour _c) : ChessPiece(Pawn, colour) {
 }
 
-bool PawnPiece::is_valid_move(const string source_square, const string destination_square) {
+bool PawnPiece::is_valid_move(map <string, ChessPiece> &chess_board, const string source_square, const string destination_square) {
   cout << "hi";
   return 0;
 }

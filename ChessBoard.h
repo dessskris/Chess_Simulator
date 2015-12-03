@@ -10,9 +10,7 @@ using namespace std;
 
 class ChessBoard {
  private:
-  ChessPiece *black_piece[16];
-  ChessPiece *white_piece[16];
-  map <string, ChessPiece> position;
+  map <string, ChessPiece*> position;
   Colour turn;
 
   

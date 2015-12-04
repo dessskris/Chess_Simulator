@@ -5,7 +5,6 @@
 #include <cmath>
 #include <map>
 #include <string>
-#include "helper.h"
 
 using namespace std;
 
@@ -19,7 +18,7 @@ class ChessPiece {
  public:
   ChessPiece();
   ChessPiece(Type _t, Colour _c);
-  ~ChessPiece();
+  virtual ~ChessPiece();
   string get_colour();
   string get_type();
   virtual bool is_valid_move(map <string, ChessPiece*> &chess_board, const string source_square, const string destination_square);

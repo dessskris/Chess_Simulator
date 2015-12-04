@@ -1,10 +1,10 @@
 CXX=g++ -Wall -g
-EXE=ChessMain.o ChessBoard.o ChessPiece.o helper.o
+EXE=ChessMain.o ChessBoard.o ChessPiece.o
 
 chess: $(EXE)
 	$(CXX) $(EXE) -o chess
 
-%.o: %.cpp %.h ChessPiece.h helper.h
+%.o: %.cpp %.h ChessPiece.h
 	$(CXX) -c $<
 
 

@@ -45,17 +45,11 @@ bool ChessPiece::is_valid_move(map <string, ChessPiece*> &chess_board, const str
 }
 
 bool is_empty(map <string, ChessPiece*> &position, const string square) {
-  map<string, ChessPiece*>::iterator it = position.begin();
-  while(it != position.end())
-    {
-      if (it->first == square)
-	return 0;
-      it++;
-    }
-  return 1;
+  if (position[square] != NULL)
+    return 0;
+  else
+    return 1;
 }
-
-
 
 
 

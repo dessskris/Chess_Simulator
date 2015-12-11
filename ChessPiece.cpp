@@ -1,14 +1,11 @@
 #include "ChessPiece.h"
 using namespace std;
 
-ChessPiece::ChessPiece() {
-}
+ChessPiece::ChessPiece() {}
 
-ChessPiece::ChessPiece(Type _t, Colour _c) : type(_t), colour(_c) {
-}
+ChessPiece::ChessPiece(Type _t, Colour _c) : type(_t), colour(_c) {}
 
-ChessPiece::~ChessPiece() {
-}
+ChessPiece::~ChessPiece() {}
 
 string ChessPiece::get_colour() {
   switch (colour) {
@@ -55,8 +52,7 @@ bool is_empty(map <string, ChessPiece*> &position, const string square) {
 
 
 
-KingPiece::KingPiece(Colour _c) : ChessPiece(King, colour) {
-}
+KingPiece::KingPiece(Colour _c) : ChessPiece(King, colour) {}
 
 bool KingPiece::is_valid_move(map <string, ChessPiece*> &chess_board, const string source_square, const string destination_square) {
   // The king moves one square in any direction
@@ -67,8 +63,7 @@ bool KingPiece::is_valid_move(map <string, ChessPiece*> &chess_board, const stri
     return 0;
 }
 
-QueenPiece::QueenPiece(Colour _c) : ChessPiece(Queen, colour) {
-}
+QueenPiece::QueenPiece(Colour _c) : ChessPiece(Queen, colour) {}
 
 bool QueenPiece::is_valid_move(map <string, ChessPiece*> &chess_board, const string source_square, const string destination_square) {
   // The queen can move any number of squares along rank, file, or diagonal, but it may not leap over other pieces.
@@ -146,8 +141,7 @@ bool QueenPiece::is_valid_move(map <string, ChessPiece*> &chess_board, const str
   return 0;
 }
 
-BishopPiece::BishopPiece(Colour _c) : ChessPiece(Bishop, colour) {
-}
+BishopPiece::BishopPiece(Colour _c) : ChessPiece(Bishop, colour) {}
 
 bool BishopPiece::is_valid_move(map <string, ChessPiece*> &chess_board, const string source_square, const string destination_square) {
   // The bishop can move any number of squares diagonally, but may not leap over other pieces.
@@ -183,8 +177,7 @@ bool BishopPiece::is_valid_move(map <string, ChessPiece*> &chess_board, const st
   return 0;
 }
 
-KnightPiece::KnightPiece(Colour _c) : ChessPiece(Knight, colour) {
-}
+KnightPiece::KnightPiece(Colour _c) : ChessPiece(Knight, colour) {}
 
 bool KnightPiece::is_valid_move(map <string, ChessPiece*> &chess_board, const string source_square, const string destination_square) {
   // The knight moves to any of the closest squares that are not on the same rank, file, or diagonal,
@@ -205,8 +198,7 @@ bool KnightPiece::is_valid_move(map <string, ChessPiece*> &chess_board, const st
   return 0;
 }
 
-RookPiece::RookPiece(Colour _c) : ChessPiece(Rook, colour) {
-}
+RookPiece::RookPiece(Colour _c) : ChessPiece(Rook, colour) {}
 
 bool RookPiece::is_valid_move(map <string, ChessPiece*> &chess_board, const string source_square, const string destination_square) {
   // The rook can move any number of squares along any rank or file, but may not leap over other pieces.
@@ -251,9 +243,7 @@ bool RookPiece::is_valid_move(map <string, ChessPiece*> &chess_board, const stri
   return 0;
 }
 
-PawnPiece::PawnPiece(Colour _c) : ChessPiece(Pawn, colour) {
-  has_moved = 0;
-}
+PawnPiece::PawnPiece(Colour _c) : ChessPiece(Pawn, colour) {}
 
 bool PawnPiece::is_valid_move(map <string, ChessPiece*> &chess_board, const string source_square, const string destination_square) {
   // The pawn may move forward to the unoccupied square immediately in front of it on the same file;
@@ -272,7 +262,8 @@ bool PawnPiece::is_valid_move(map <string, ChessPiece*> &chess_board, const stri
   }
 
   // first move, advance two squares along the same file provided both squares are unoccupied
-  if (!has_moved) {
+  if (((colour == Black) && (source_square[1] == 6)) ||
+      ((colour == White) && (source_square[1] == 1))) {
     if ((source_square[0] == destination_square[0]) &&
 	(abs(source_square[1] - destination_square[1]) == 2)) {
       char square_in_between[2];

@@ -6,61 +6,67 @@
 #include <map>
 #include <string>
 #include "helper.h"
+#include "ChessBoard.h"
 
 using namespace std;
 
-enum Colour {Black, White};
-enum Type {King, Queen, Bishop, Knight, Rook, Pawn};
+class ChessBoard;
 
 class ChessPiece {
  protected:
   Type type;
   Colour colour;
+  ChessBoard *board;
  public:
-  ChessPiece();
-  ChessPiece(Type _t, Colour _c);
+  ChessPiece(Type _t, Colour _c, ChessBoard *_b);
   virtual ~ChessPiece();
   string get_colour();
   string get_type();
-  virtual bool is_valid_move(map <string, ChessPiece*> &chess_board, const string source_square, const string destination_square);
-  friend bool is_empty(map <string, ChessPiece*> &position, const string square);
+  virtual bool is_valid_move(const string source_square, const string destination_square);
+  bool is_empty(const string square);
 };
 
 
 class KingPiece : public ChessPiece {
  public:
-  KingPiece(Colour _c);
-  virtual bool is_valid_move(map <string, ChessPiece*> &chess_board, const string source_square, const string destination_square);
+  KingPiece(Colour _c, ChessBoard *_b);
+  virtual ~KingPiece();
+  virtual bool is_valid_move(const string source_square, const string destination_square);
 };
 
 class QueenPiece : public ChessPiece {
  public:
-  QueenPiece(Colour _c);
-  virtual bool is_valid_move(map <string, ChessPiece*> &chess_board, const string source_square, const string destination_square);
+  QueenPiece(Colour _c, ChessBoard *_b);
+  virtual ~QueenPiece();
+  virtual bool is_valid_move(const string source_square, const string destination_square);
 };
 
 class BishopPiece : public ChessPiece {
  public:
-  BishopPiece(Colour _c);
-  virtual bool is_valid_move(map <string, ChessPiece*> &chess_board, const string source_square, const string destination_square);
+  BishopPiece(Colour _c, ChessBoard *_b);
+  virtual ~BishopPiece();
+  virtual bool is_valid_move(const string source_square, const string destination_square);
 };
 
 class KnightPiece : public ChessPiece {
  public:
-  KnightPiece(Colour _c);
-  virtual bool is_valid_move(map <string, ChessPiece*> &chess_board, const string source_square, const string destination_square);
+  KnightPiece(Colour _c, ChessBoard *_b);
+  virtual ~KnightPiece();
+  virtual bool is_valid_move(const string source_square, const string destination_square);
 };
 
 class RookPiece : public ChessPiece {
  public:
-  RookPiece(Colour _c);
-  virtual bool is_valid_move(map <string, ChessPiece*> &chess_board, const string source_square, const string destination_square);
+  RookPiece(Colour _c, ChessBoard *_b);
+  virtual ~RookPiece();
+  virtual bool is_valid_move(const string source_square, const string destination_square);
 };
 
 class PawnPiece : public ChessPiece {
  public:
-  PawnPiece(Colour _c);
-  virtual bool is_valid_move(map <string, ChessPiece*> &chess_board, const string source_square, const string destination_square);
+  PawnPiece(Colour _c, ChessBoard *_b);
+  virtual ~PawnPiece();
+  virtual bool is_valid_move(const string source_square, const string destination_square);
 };
 
 

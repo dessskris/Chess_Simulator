@@ -7,6 +7,7 @@
 
 using namespace std;
 
+class ChessPiece;
 
 class ChessBoard {
  private:
@@ -18,6 +19,8 @@ class ChessBoard {
   ChessBoard();
   ~ChessBoard();
   void InitialisePosition();
+  ChessPiece* operator [](string pos);
+
   void submitMove(const string source_square, const string destination_square);
   void resetBoard();
 };

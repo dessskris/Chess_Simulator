@@ -35,6 +35,43 @@ string ChessPiece::get_type() {
   }
 }
 
+string ChessPiece::get_symbol() {
+  switch (type) {
+  case King:
+    if (colour == Black)
+      return "♚";
+    else
+      return "♔";
+  case Queen:
+    if (colour == Black)
+      return "♛";
+    else
+      return "♕";
+  case Bishop:
+    if (colour == Black)
+      return "♝";
+    else
+      return "♗";
+  case Knight:
+    if (colour == Black)
+      return "♞";
+    else
+      return "♘";
+  case Rook:
+    if (colour == Black)
+      return "♜";
+    else
+      return "♖";
+  case Pawn:
+    if (colour == Black)
+      return "♟";
+    else
+      return "♙";
+  default:
+    return "Null";
+  }
+}
+
 bool ChessPiece::is_valid_move(const string source_square, const string destination_square) {
   return 0;
 }

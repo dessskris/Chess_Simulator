@@ -80,7 +80,12 @@ void ChessBoard::printBoard() {
     for (char file = 'A'; file <= 'H'; file++) {
       mysquare[0] = file;
       cout << '|' << " ";
-      cout << ( (position[mysquare] == NULL) ? ' ' : 'P') << " ";
+      if (position[mysquare] == NULL)
+	cout << ' ';
+      else
+	cout << position[mysquare]->get_symbol();
+      cout << " ";
+  //cout << ( (position[mysquare] == NULL) ? ' ' : position[mysquare]->get_symbol()) << " ";
     }
     cout << "|" << endl;
   }

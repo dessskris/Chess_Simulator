@@ -22,6 +22,7 @@ class ChessPiece {
   virtual ~ChessPiece();
   string get_colour();
   string get_type();
+  string get_symbol();
   virtual bool is_valid_move(const string source_square, const string destination_square);
   bool is_empty(const string square);
 };

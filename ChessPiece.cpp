@@ -38,35 +38,17 @@ string ChessPiece::get_type() {
 string ChessPiece::get_symbol() {
   switch (type) {
   case King:
-    if (colour == Black)
-      return "♚";
-    else
-      return "♔";
+    return (colour == Black) ? "♚" : "♔";
   case Queen:
-    if (colour == Black)
-      return "♛";
-    else
-      return "♕";
+    return (colour == Black) ? "♛" : "♕";
   case Bishop:
-    if (colour == Black)
-      return "♝";
-    else
-      return "♗";
+    return (colour == Black) ? "♝" : "♗";
   case Knight:
-    if (colour == Black)
-      return "♞";
-    else
-      return "♘";
+    return (colour == Black) ? "♞" : "♘";
   case Rook:
-    if (colour == Black)
-      return "♜";
-    else
-      return "♖";
+    return (colour == Black) ? "♜" : "♖";
   case Pawn:
-    if (colour == Black)
-      return "♟";
-    else
-      return "♙";
+    return (colour == Black) ? "♟" : "♙";
   default:
     return "Null";
   }

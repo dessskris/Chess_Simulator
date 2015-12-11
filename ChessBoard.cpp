@@ -81,11 +81,9 @@ void ChessBoard::printBoard() {
       mysquare[0] = file;
       cout << '|' << " ";
       if (position[mysquare] == NULL)
-	cout << ' ';
+	cout << "  ";
       else
-	cout << position[mysquare]->get_symbol();
-      cout << " ";
-  //cout << ( (position[mysquare] == NULL) ? ' ' : position[mysquare]->get_symbol()) << " ";
+	cout << position[mysquare]->get_symbol() << " ";
     }
     cout << "|" << endl;
   }

@@ -3,12 +3,15 @@
 
 #include <map>
 #include <string>
-#include "ChessPiece.h"
+#include <iostream>
 
 using namespace std;
 
 enum Colour {Black, White};
 enum Type {King, Queen, Bishop, Knight, Rook, Pawn};
+
+bool valid_square(const string square);
+
 
 
 // check square is in the format of A8 or not

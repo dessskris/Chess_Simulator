@@ -20,10 +20,11 @@ class ChessPiece {
  public:
   ChessPiece(Type _t, Colour _c, ChessBoard *_b);
   virtual ~ChessPiece();
-  string get_colour();
-  string get_type();
+  Colour get_colour();
+  string print_colour();
+  string print_type();
   string get_symbol();
-  virtual bool is_valid_move(const string source_square, const string destination_square);
+  virtual bool is_valid_move(const string source_square, const string destination_square) = 0;
   bool is_empty(const string square);
 };
 

@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include "helper.h"
 #include "ChessPiece.h"
 
 using namespace std;
@@ -13,7 +14,7 @@ class ChessBoard {
  private:
   map <string, ChessPiece*> position;
   Colour turn;
-
+  bool capture_sign;
   
  public:
   ChessBoard();
@@ -21,6 +22,9 @@ class ChessBoard {
   ChessPiece* operator [](string pos);
   void initialisePosition();
   void printBoard();
+  void move(const string source_square, const string destination_square);
+  void capture();
+  void switch_turn();
   void submitMove(const string source_square, const string destination_square);
   void resetBoard();
 };

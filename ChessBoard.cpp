@@ -4,18 +4,19 @@ using namespace std;
 ChessBoard::ChessBoard() {
   initialisePosition();
   turn = White;
+  capture_sign = 0;
+  cout << "A new chess game is started!\n\n";
   printBoard();
 }
 
 ChessBoard::~ChessBoard() {
   map<string, ChessPiece*>::iterator it = position.begin();
-  while(it != position.end())
-    {
-      if (it->second != NULL) {
-	delete it->second;
-      }
-      it++;
+  while(it != position.end()) {
+    if (it->second != NULL) {
+      delete it->second;
     }
+    it++;
+  }
 }
 
 ChessPiece* ChessBoard::operator [](string pos) {
@@ -80,29 +81,87 @@ void ChessBoard::printBoard() {
     for (char file = 'A'; file <= 'H'; file++) {
       mysquare[0] = file;
       cout << '|' << " ";
-      if (position[mysquare] == NULL)
-	cout << "  ";
-      else
+      if (position[mysquare] != NULL)
 	cout << position[mysquare]->get_symbol() << " ";
+      else
+	cout << "  ";
     }
     cout << "|" << endl;
   }
   cout << "  +---+---+---+---+---+---+---+---+" << endl;
 }
 
+void ChessBoard::move(const string source_square, const string destination_square) {
+  ChessPiece *temp_piece = position[source_square];
+  position[source_square] = NULL;
+  position[destination_square] = temp_piece;
+}
+
+void ChessBoard::capture() {
+  capture_sign = (capture_sign) ? 0 : 1;
+}
+
+void ChessBoard::switch_turn() {
+  if (turn == Black)
+    turn = White;
+  else
+    turn = Black;
+}
 
 void ChessBoard::submitMove(const string source_square, const string destination_square) {
-  if (position[source_square] != NULL)
-    cout << (position[source_square]->is_valid_move(source_square, destination_square));
-  else
-    cout << "wrong";
+  if (!valid_square(source_square) || !valid_square(destination_square)) {
+    cerr << "Square invalid!\n";
+    return;
+  }
+  if (position[source_square] == NULL) {
+    cout << "There is no piece at position " << source_square << "!\n";
+    return;
+  }
+  if (position[source_square]->get_colour() != turn) {
+    cout << "It is not " << position[source_square]->print_colour() << "'s turn to move!\n";
+    return;
+  }
 
 
-  // need to check if it's a pawn, first move needs to be updated if it has not moved yet
-  //change turn
+
+  if (!position[source_square]->is_valid_move(source_square, destination_square)) {
+    cout << position[source_square]->print_colour() << "'s "
+	 << position[source_square]->print_type() << " cannot move to "
+	 << destination_square << "!\n";
+    return;
+  }
+
+  // Reaching this point means it is a valid move
+  
+  cout << position[source_square]->print_colour() << "'s "
+       << position[source_square]->print_type() << " moves from "
+       << source_square << " to " << destination_square;
+  if (capture_sign) {
+    cout << " taking " << position[destination_square]->print_colour() << "'s "
+	 << position[destination_square]->print_type() << endl;
+    capture();
+  } else {
+    cout << endl;
+  }
+
+  move(source_square, destination_square); 
+  switch_turn();
 }
 
 void ChessBoard::resetBoard() {
-  cout << "hi";
+  map<string, ChessPiece*>::iterator it = position.begin();
+  while(it != position.end()) {
+    if (it->second != NULL) {
+      delete it->second;
+    }
+    position.erase(it);
+    it++;
+  }
+  initialisePosition();
+  turn = White;
+  capture_sign = 0;
+  cout << "A new chess game is started!\n\n";
+  printBoard();
+
 }
 

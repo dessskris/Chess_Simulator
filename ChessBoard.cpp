@@ -2,8 +2,9 @@
 using namespace std;
 
 ChessBoard::ChessBoard() {
-  InitialisePosition();
+  initialisePosition();
   turn = White;
+  printBoard();
 }
 
 ChessBoard::~ChessBoard() {
@@ -17,7 +18,12 @@ ChessBoard::~ChessBoard() {
     }
 }
 
-void ChessBoard::InitialisePosition() {
+ChessPiece* ChessBoard::operator [](string pos) {
+  return this->position[pos];
+}
+
+
+void ChessBoard::initialisePosition() {
   position.insert (make_pair("A8", new RookPiece(Black, this)));
   position.insert (make_pair("B8", new KnightPiece(Black, this)));
   position.insert (make_pair("C8", new BishopPiece(Black, this)));
@@ -27,7 +33,8 @@ void ChessBoard::InitialisePosition() {
   position.insert (make_pair("G8", new KnightPiece(Black, this)));
   position.insert (make_pair("H8", new RookPiece(Black, this)));
 
-  char square[2];
+  char square[3];
+  square[2] = '\0';
   square[1] = '7';
   for (char file = 'A'; file <= 'H'; file++) {
     square[0] = file;
@@ -59,14 +66,33 @@ void ChessBoard::InitialisePosition() {
 
 }
 
-ChessPiece* ChessBoard::operator [](string pos) {
-  return this->position[pos];
+void ChessBoard::printBoard() {
+  cout << "    ";
+  char mysquare[3];
+  mysquare[2]='\0';
+  for (char file = 'A'; file <= 'H'; file++) 
+    cout << file << "   ";
+  cout << endl;
+  for (char rank='8'; rank > '0'; rank--) {
+    mysquare[1] = rank;
+    cout << "  +---+---+---+---+---+---+---+---+" << endl;
+    cout << rank << " ";
+    for (char file = 'A'; file <= 'H'; file++) {
+      mysquare[0] = file;
+      cout << '|' << " ";
+      cout << ( (position[mysquare] == NULL) ? ' ' : 'P') << " ";
+    }
+    cout << "|" << endl;
+  }
+  cout << "  +---+---+---+---+---+---+---+---+" << endl;
 }
+
 
 void ChessBoard::submitMove(const string source_square, const string destination_square) {
   if (position[source_square] != NULL)
     cout << (position[source_square]->is_valid_move(source_square, destination_square));
-
+  else
+    cout << "wrong";
 
 
   // need to check if it's a pawn, first move needs to be updated if it has not moved yet

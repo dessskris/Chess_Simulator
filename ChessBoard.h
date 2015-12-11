@@ -18,9 +18,9 @@ class ChessBoard {
  public:
   ChessBoard();
   ~ChessBoard();
-  void InitialisePosition();
   ChessPiece* operator [](string pos);
-
+  void initialisePosition();
+  void printBoard();
   void submitMove(const string source_square, const string destination_square);
   void resetBoard();
 };

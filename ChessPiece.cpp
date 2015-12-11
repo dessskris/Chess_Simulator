@@ -267,8 +267,8 @@ bool PawnPiece::is_valid_move(const string source_square, const string destinati
   }
 
   // first move, advance two squares along the same file provided both squares are unoccupied
-  if (((colour == Black) && (source_square[1] == 6)) ||
-      ((colour == White) && (source_square[1] == 1))) {
+  if (((colour == Black) && (source_square[1] == 7)) ||
+      ((colour == White) && (source_square[1] == 2))) {
     if ((source_square[0] == destination_square[0]) &&
 	(abs(source_square[1] - destination_square[1]) == 2)) {
       char square_in_between[2];

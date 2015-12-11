@@ -103,7 +103,7 @@ bool QueenPiece::is_valid_move(const string source_square, const string destinat
     square[1] = source_square[1];
     for (char file = start; file < finish; file++) {
       square[0] = file;
-      if (board[square] != NULL)
+      if (!is_empty(square))
 	return 0;
     }
     return 1;
@@ -133,7 +133,7 @@ bool QueenPiece::is_valid_move(const string source_square, const string destinat
     for (char file = start_f, rank = start_r; (file < finish_f) && (rank < finish_r); file++, rank++) {
       square[0] = file;
       square[1] = rank;
-      if (board[square] != NULL)
+      if (!is_empty(square))
 	return 0;
     }
     return 1;
@@ -171,7 +171,7 @@ bool BishopPiece::is_valid_move(const string source_square, const string destina
     for (char file = start_f, rank = start_r; (file < finish_f) && (rank < finish_r); file++, rank++) {
       square[0] = file;
       square[1] = rank;
-      if (board[square] != NULL)
+      if (!is_empty(square))
 	return 0;
     }
     return 1;
@@ -219,7 +219,7 @@ bool RookPiece::is_valid_move(const string source_square, const string destinati
     square[0] = source_square[0];
     for (char rank = start; rank < finish; rank++) {
       square[1] = rank;
-      if (board[square] != NULL)
+      if (!is_empty(square))
 	return 0;
     }
     return 1;
@@ -238,7 +238,7 @@ bool RookPiece::is_valid_move(const string source_square, const string destinati
     square[1] = source_square[1];
     for (char file = start; file < finish; file++) {
       square[0] = file;
-      if (board[square] != NULL)
+      if (!is_empty(square))
 	return 0;
     }
     return 1;
@@ -278,7 +278,7 @@ bool PawnPiece::is_valid_move(const string source_square, const string destinati
       if (colour == White)
 	square_in_between[1] = source_square[1] + 1;
 
-      if (board[square_in_between] == NULL) && (board[destination_square] == NULL)
+      if (is_empty(square_in_between) && is_empty(destination_square))
 	return 1;
       return 0;
     }
@@ -287,7 +287,7 @@ bool PawnPiece::is_valid_move(const string source_square, const string destinati
   // move forward to the unoccupied square immediately in front of it on the same file
   if ((source_square[0] == destination_square[0]) &&
       (abs(source_square[1] - destination_square[1]) == 1)) {
-    if (board[destination_square] == NULL)
+    if (is_empty(destination_square))
       return 1;
     return 0;
   }
@@ -295,7 +295,7 @@ bool PawnPiece::is_valid_move(const string source_square, const string destinati
   // move to a square occupied by an opponent's piece which is diagonally in front of it on an adjacent file, capturing that piece
   if ((abs(source_square[0] - destination_square[0]) == 1) &&
       (abs(source_square[1] - destination_square[1]) == 1)) {
-    if (board[destination_square] != NULL)) {
+    if (!is_empty(destination_square)) {
       //capture
       return 1;
     }

@@ -26,7 +26,11 @@ void ChessBoard::initialise_board() {
   black_king_pos = "D8";
   white_king_pos = "D1";
   captured_piece = NULL;
-  cout << "A new chess game is started!\n\n";
+  piece_checking_black = NULL;
+  piece_checking_black_pos = "00";
+  piece_checking_white = NULL;
+  piece_checking_white_pos = "00";
+  cout << "A new chess game is started!\n";
 }
 
 void ChessBoard::initialise_position() {
@@ -69,7 +73,6 @@ void ChessBoard::initialise_position() {
   position.insert (make_pair("F1", new BishopPiece(White, this)));
   position.insert (make_pair("G1", new KnightPiece(White, this)));
   position.insert (make_pair("H1", new RookPiece(White, this)));
-
 }
 
 void ChessBoard::switch_turn() {
@@ -96,6 +99,29 @@ void ChessBoard::undo_capture(const string old_source_square, const string old_d
   position[old_source_square] = position[old_destination_square];
   position[old_destination_square] = captured_piece;
   captured_piece = NULL;
+}
+
+bool ChessBoard::pretend_move_king_ok(string source_square, string destination_square, Colour colour) {
+  capture_sign = 0;
+  position[source_square]->is_valid_move(source_square, destination_square);
+  if (capture_sign) {
+    move_capture(source_square, destination_square);
+    if (!king_in_check(colour)) {
+      undo_capture(source_square, destination_square);
+      return 1;
+    } else {
+      undo_capture(source_square, destination_square);
+    }
+  } else {
+    move(source_square, destination_square); 
+    if (!king_in_check(colour)) {
+      move(destination_square, source_square);
+      return 1;
+    } else {
+      move(destination_square, source_square);
+    }
+  }
+  return 0;
 }
 
 void ChessBoard::capture() {
@@ -131,6 +157,136 @@ bool ChessBoard::king_in_check(Colour colour) {
 	capture();
 	return 1;
       }
+    }
+    it++;
+  }
+  return 0;
+}
+
+bool ChessBoard::any_valid_move(Colour colour) {
+  ChessPiece *checking_piece = NULL;
+  string checking_piece_pos;
+  string my_king_pos;
+  switch (colour) {
+  case Black:
+    checking_piece = piece_checking_black;
+    checking_piece_pos = piece_checking_black_pos;
+    my_king_pos = black_king_pos;
+    break;
+  case White:
+    checking_piece = piece_checking_white;
+    checking_piece_pos = piece_checking_white_pos;
+    my_king_pos = white_king_pos;
+    break;
+  }
+
+  map<string, ChessPiece*>::iterator it = position.begin();
+  while (it != position.end()) {
+    if (it->second != NULL) {
+      if (it->second->get_colour() == colour) {
+	// Capturing the checking piece
+	if ((it->second->is_valid_move(it->first, checking_piece_pos)) &&
+	    (pretend_move_king_ok(it->first, checking_piece_pos, colour)))
+	    return 1;
+	}
+
+	// Interposing a piece between the checking piece and the king
+	if ((checking_piece->get_type() != Knight) &&
+	    ( (abs(checking_piece_pos[0] - my_king_pos[0]) > 1) ||
+	      (abs(checking_piece_pos[1] - my_king_pos[1]) > 1)) ) {
+
+	  if ((checking_piece->get_type() == Rook) ||
+	      (checking_piece->get_type() == Queen)) {
+	    // Check for moves along the file or rank
+	    char square[3];
+	    square[2] = '\0';
+	    if (checking_piece_pos[0] == my_king_pos[0]) { // same file
+	      square[0] = checking_piece_pos[0];
+	      char start, finish;
+	      if (checking_piece_pos[1] - my_king_pos[1] > 0) {
+		start = my_king_pos[1] + 1;
+		finish = checking_piece_pos[1] - 1;
+	      } else {
+		start = checking_piece_pos[1] + 1;
+		finish = my_king_pos[1] - 1;
+	      }
+	      for (char rank = start; rank <= finish; rank++) {
+		square[1] = rank;
+		if ((it->second->is_valid_move(it->first, square)) &&
+		    (pretend_move_king_ok(it->first, checking_piece_pos, colour)))
+		  return 1;
+	      }
+	    }
+
+	    if (checking_piece_pos[1] == my_king_pos[1]) { // same rank
+	      square[1] = checking_piece_pos[1];
+	      char start, finish;
+	      if (checking_piece_pos[0] - my_king_pos[0] > 0) {
+		start = my_king_pos[0] + 1;
+		finish = checking_piece_pos[0] - 1;
+	      } else {
+		start = checking_piece_pos[0] + 1;
+		finish = my_king_pos[0] - 1;
+	      }
+	      for (char file = start; file <= finish; file++) {
+		square[0] = file;
+		if ((it->second->is_valid_move(it->first, square)) &&
+		    (pretend_move_king_ok(it->first, checking_piece_pos, colour)))
+		  return 1;
+	      }
+	    }
+	  }
+	  if ((checking_piece->get_type() == Bishop) ||
+	      (checking_piece->get_type() == Queen)) {
+	    // Check for moves diagonally
+	    char square[3];
+	    square[2] = '\0';
+	    if (abs(checking_piece_pos[0] - my_king_pos[0]) ==
+		abs(checking_piece_pos[1] - my_king_pos[1])) {
+	      char start_f, start_r, finish_f, finish_r;
+
+	      if (checking_piece_pos[0] > my_king_pos[0]) {
+		start_f = my_king_pos[0] + 1;
+		finish_f = checking_piece_pos[0] - 1;
+	      } else {
+		start_f = checking_piece_pos[0] + 1;
+		finish_f = my_king_pos[0] - 1;
+	      }
+
+	      if (checking_piece_pos[1] > my_king_pos[1]) {
+		start_r = my_king_pos[1] + 1;
+		finish_r = checking_piece_pos[1] - 1;
+	      } else {
+		start_r = checking_piece_pos[1] + 1;
+		finish_r = my_king_pos[1] - 1;
+	      }
+
+	      for (char file = start_f, rank = start_r;
+		   (file <= finish_f) && (rank <= finish_r);
+		   file++, rank++) {
+		square[0] = file;
+		square[1] = rank;
+		if ((it->second->is_valid_move(it->first, square)) &&
+		    (pretend_move_king_ok(it->first, checking_piece_pos, colour)) )
+		  return 1;
+	      }
+	    }
+	  }
+	}
+
+	// Moving the king to a square where it is not under attack
+	if (it->second->get_type() == King) {
+	  map<string, ChessPiece*>::iterator ite = position.begin();
+	  while (ite != position.end()) {
+	    if (ite->second == NULL) {
+	      if ((it->second->is_valid_move(it->first, ite->first)) &&
+		  (pretend_move_king_ok(it->first, checking_piece_pos, colour)) )
+		return 1;
+	    }
+	    ite++;
+	  }
+	}
+	// This piece has no valid move in response to a check
     }
     it++;
   }
@@ -193,6 +349,7 @@ void ChessBoard::submitMove(const string source_square, const string destination
   captured_piece = NULL;
 
   if (!position[source_square]->is_valid_move(source_square, destination_square)) {
+    capture_sign = 0;
     cout << position[source_square]->print_colour() << "'s "
 	 << position[source_square]->print_type() << " cannot move to "
 	 << destination_square << "!\n";
@@ -231,15 +388,29 @@ void ChessBoard::submitMove(const string source_square, const string destination
     cout << endl;
   }
 
+  // Check if the other player's King is in check or a stalemate
+  capture_sign = 0;
   switch (turn) {
   case Black:
     if (king_in_check(White)) { // and not checkmate
-      cout << "White is in check\n";
+      piece_checking_white = position[destination_square];
+      piece_checking_white_pos = destination_square;
+      if (any_valid_move(White)) {
+	cout << "White is in check\n";
+      } else {
+	cout << "White is in checkmate\n";
+      }
       break;
     }
   case White:
     if (king_in_check(Black)) { // and not checkmate
-      cout << "Black is in check\n";
+      piece_checking_black = position[destination_square];
+      piece_checking_black_pos = destination_square;
+      if (any_valid_move(Black)) {
+	cout << "Black is in check\n";
+      } else {
+	cout << "Black is in checkmate\n";
+      }
       break;
     }
   }

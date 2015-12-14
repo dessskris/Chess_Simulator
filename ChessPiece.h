@@ -17,7 +17,7 @@ class ChessPiece {
   Type type;
   Colour colour;
   ChessBoard *board;
-  void check_capture(const string square);
+  bool check_capture(const string square);
  public:
   ChessPiece(Type _t, Colour _c, ChessBoard *_b);
   virtual ~ChessPiece();

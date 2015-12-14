@@ -135,7 +135,7 @@ bool QueenPiece::is_valid_move(const string source_square, const string destinat
   // move along the rank
   if (source_square[1] == destination_square[1]) {
     char start, finish;
-    if (source_square[0] - destination_square[0] > 0) {
+    if (source_square[0] > destination_square[0]) {
       start = destination_square[0] + 1;
       finish = source_square[0] - 1;
     } else {
@@ -160,35 +160,62 @@ bool QueenPiece::is_valid_move(const string source_square, const string destinat
   }
 
   // diagonal move
-  if (abs(source_square[0] - destination_square[0]) == abs(source_square[1] - destination_square[1])) {
+  if (abs(source_square[0] - destination_square[0]) ==
+      abs(source_square[1] - destination_square[1])) {
     char start_f, start_r, finish_f, finish_r;
 
-    if (source_square[0] - destination_square[0] > 0) {
-      start_f = destination_square[0] + 1;
-      finish_f = source_square[0] - 1;
-    } else {
-      start_f = source_square[0] + 1;
-      finish_f = destination_square[0] - 1;
+    // Move to the right and up, or to the left and down
+    if ((source_square[0] - destination_square[0]) ==
+	(source_square[1] - destination_square[1])) {
+      if (source_square[0] > destination_square[0]) {
+	start_f = destination_square[0] + 1;
+	finish_f = source_square[0] - 1;
+	start_r = destination_square[1] + 1;
+	finish_r = source_square[1] - 1;
+      } else {
+	start_f = source_square[0] + 1;
+	finish_f = destination_square[0] - 1;
+	start_r = source_square[1] + 1;
+	finish_r = destination_square[1] - 1;
+      }
+      char square[3];
+      square[2] = '\0';
+      for (char file = start_f, rank = start_r;
+	   (file <= finish_f) && (rank <= finish_r);
+	   file++, rank++) {
+	square[0] = file;
+	square[1] = rank;
+	if (!is_empty(square)) {
+	  return 0;
+	}
+      }
+    }
+    // Move to the right and down, or to the left and up
+    else {
+      if (source_square[0] > destination_square[0]) {
+	start_f = source_square[0] + 1;
+	finish_f = destination_square[0] - 1;
+	start_r = destination_square[1] - 1;
+	finish_r = source_square[1] + 1;
+      } else {
+	start_f = source_square[0] + 1;
+	finish_f = destination_square[0] - 1;
+	start_r = source_square[1] - 1;
+	finish_r = destination_square[1] + 1;
+      }
+      char square[3];
+      square[2] = '\0';
+      for (char file = start_f, rank = start_r;
+	   (file <= finish_f) && (rank >= finish_r);
+	   file++, rank--) {
+	square[0] = file;
+	square[1] = rank;
+	if (!is_empty(square)) {
+	  return 0;
+	}
+      }
     }
 
-    if (source_square[1] - destination_square[1] > 0) {
-      start_r = destination_square[1] + 1;
-      finish_r = source_square[1] - 1;
-    } else {
-      start_r = source_square[1] + 1;
-      finish_r = destination_square[1] - 1;
-    }
-
-    char square[3];
-    square[2] = '\0';
-    for (char file = start_f, rank = start_r;
-	 (file <= finish_f) && (rank <= finish_r);
-	 file++, rank++) {
-      square[0] = file;
-      square[1] = rank;
-      if (!is_empty(square))
-	return 0;
-    }
     if (check_capture(destination_square)) {
       if (board->get_piece_colour(destination_square) == colour) {
 	board->capture();
@@ -211,32 +238,58 @@ bool BishopPiece::is_valid_move(const string source_square, const string destina
       abs(source_square[1] - destination_square[1])) {
     char start_f, start_r, finish_f, finish_r;
 
-    if (source_square[0] > destination_square[0]) {
-      start_f = destination_square[0] + 1;
-      finish_f = source_square[0] - 1;
-    } else {
-      start_f = source_square[0] + 1;
-      finish_f = destination_square[0] - 1;
+    // Move to the right and up, or to the left and down
+    if ((source_square[0] - destination_square[0]) ==
+	(source_square[1] - destination_square[1])) {
+      if (source_square[0] > destination_square[0]) {
+	start_f = destination_square[0] + 1;
+	finish_f = source_square[0] - 1;
+	start_r = destination_square[1] + 1;
+	finish_r = source_square[1] - 1;
+      } else {
+	start_f = source_square[0] + 1;
+	finish_f = destination_square[0] - 1;
+	start_r = source_square[1] + 1;
+	finish_r = destination_square[1] - 1;
+      }
+      char square[3];
+      square[2] = '\0';
+      for (char file = start_f, rank = start_r;
+	   (file <= finish_f) && (rank <= finish_r);
+	   file++, rank++) {
+	square[0] = file;
+	square[1] = rank;
+	if (!is_empty(square)) {
+	  return 0;
+	}
+      }
+    }
+    // Move to the right and down, or to the left and up
+    else {
+      if (source_square[0] > destination_square[0]) {
+	start_f = source_square[0] + 1;
+	finish_f = destination_square[0] - 1;
+	start_r = destination_square[1] - 1;
+	finish_r = source_square[1] + 1;
+      } else {
+	start_f = source_square[0] + 1;
+	finish_f = destination_square[0] - 1;
+	start_r = source_square[1] - 1;
+	finish_r = destination_square[1] + 1;
+      }
+      char square[3];
+      square[2] = '\0';
+      for (char file = start_f, rank = start_r;
+	   (file <= finish_f) && (rank >= finish_r);
+	   file++, rank--) {
+	square[0] = file;
+	square[1] = rank;
+	if (!is_empty(square)) {
+	  return 0;
+	}
+      }
     }
 
-    if (source_square[1] > destination_square[1]) {
-      start_r = destination_square[1] + 1;
-      finish_r = source_square[1] - 1;
-    } else {
-      start_r = source_square[1] + 1;
-      finish_r = destination_square[1] - 1;
-    }
-
-    char square[3];
-    square[2] = '\0';
-    for (char file = start_f, rank = start_r;
-	 (file <= finish_f) && (rank <= finish_r);
-	 file++, rank++) {
-      square[0] = file;
-      square[1] = rank;
-      if (!is_empty(square))
-	return 0;
-    }
     if (check_capture(destination_square)) {
       if (board->get_piece_colour(destination_square) == colour) {
 	board->capture();
@@ -291,7 +344,7 @@ bool RookPiece::is_valid_move(const string source_square, const string destinati
   // The rook can move any number of squares along any rank or file, but may not leap over other pieces.
   if (source_square[0] == destination_square[0]) { // same file
     char start, finish;
-    if (source_square[1] - destination_square[1] > 0) {
+    if (source_square[1] > destination_square[1]) {
       start = destination_square[1] + 1;
       finish = source_square[1] - 1;
     } else {
@@ -317,7 +370,7 @@ bool RookPiece::is_valid_move(const string source_square, const string destinati
 
   if (source_square[1] == destination_square[1]) { // same rank
     char start, finish;
-    if (source_square[0] - destination_square[0] > 0) {
+    if (source_square[0] > destination_square[0]) {
       start = destination_square[0] + 1;
       finish = source_square[0] - 1;
     } else {

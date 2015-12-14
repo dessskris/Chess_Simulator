@@ -286,7 +286,7 @@ void ChessBoard::submitMove(const string source_square, const string destination
   capture_sign = 0;
   switch (turn) {
   case Black:
-    if (king_in_check(White)) { // and not checkmate
+    if (king_in_check(White)) {
       piece_checking_white = position[destination_square];
       piece_checking_white_pos = destination_square;
       if (any_valid_move(White)) {
@@ -294,10 +294,12 @@ void ChessBoard::submitMove(const string source_square, const string destination
       } else {
 	cout << "White is in checkmate\n";
       }
-      break;
+    } else if (!any_valid_move(White)) {
+      cout << "White is in a stalemate\n";
     }
+    break;
   case White:
-    if (king_in_check(Black)) { // and not checkmate
+    if (king_in_check(Black)) {
       piece_checking_black = position[destination_square];
       piece_checking_black_pos = destination_square;
       if (any_valid_move(Black)) {
@@ -305,8 +307,10 @@ void ChessBoard::submitMove(const string source_square, const string destination
       } else {
 	cout << "Black is in checkmate\n";
       }
-      break;
+    } else if (!any_valid_move(Black)) {
+      cout << "Black is in a stalemate\n";
     }
+    break;
   }
 
   switch_turn();

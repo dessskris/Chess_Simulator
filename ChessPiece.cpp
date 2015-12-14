@@ -20,6 +20,10 @@ string ChessPiece::print_colour() {
   }
 }
 
+Type ChessPiece::get_type() {
+  return type;
+}
+
 string ChessPiece::print_type() {
   switch (type) {
   case King:
@@ -65,7 +69,12 @@ bool ChessPiece::is_empty(const string square) {
     return 1;
 }
 
-
+void ChessPiece::check_capture(const string square) {
+  if (!is_empty(square) &&
+      (board->get_piece_colour(square) != colour)) {
+    board->capture();
+  }
+}
 
 
 
@@ -76,9 +85,7 @@ bool KingPiece::is_valid_move(const string source_square, const string destinati
   // The king moves one square in any direction
   if ( (abs(source_square[0] - destination_square[0]) == 1) &&
        (abs(source_square[1] - destination_square[1]) == 1) ) {
-    if (!is_empty(destination_square)) {
-      board->capture();
-    }
+    check_capture(destination_square);
     return 1;
   }
   else
@@ -109,9 +116,7 @@ bool QueenPiece::is_valid_move(const string source_square, const string destinat
       if (!is_empty(square))
 	return 0;
     }
-    if (!is_empty(destination_square)) {
-      board->capture();
-    }
+    check_capture(destination_square);
     return 1;
   }
 
@@ -133,9 +138,7 @@ bool QueenPiece::is_valid_move(const string source_square, const string destinat
       if (!is_empty(square))
 	return 0;
     }
-    if (!is_empty(destination_square)) {
-      board->capture();
-    }
+    check_capture(destination_square);
     return 1;
   }
 
@@ -169,9 +172,7 @@ bool QueenPiece::is_valid_move(const string source_square, const string destinat
       if (!is_empty(square))
 	return 0;
     }
-    if (!is_empty(destination_square)) {
-      board->capture();
-    }
+    check_capture(destination_square);
     return 1;
   }
 
@@ -213,9 +214,7 @@ bool BishopPiece::is_valid_move(const string source_square, const string destina
       if (!is_empty(square))
 	return 0;
     }
-    if (!is_empty(destination_square)) {
-      board->capture();
-    }
+    check_capture(destination_square);
     return 1;
   }
   return 0;
@@ -233,18 +232,14 @@ bool KnightPiece::is_valid_move(const string source_square, const string destina
   // two squares vertically and one square horizontally
   if ((abs(source_square[1] - destination_square[1]) == 2) &&
       (abs(source_square[0] - destination_square[0]) == 1)) {
-    if (!is_empty(destination_square)) {
-      board->capture();
-    }
+    check_capture(destination_square);
     return 1;
   }
 
   // two squares horizontally and one square vertically
   if ((abs(source_square[0] - destination_square[0]) == 2) &&
       (abs(source_square[1] - destination_square[1]) == 1)) {
-    if (!is_empty(destination_square)) {
-      board->capture();
-    }
+    check_capture(destination_square);
     return 1;
   }
 
@@ -273,9 +268,7 @@ bool RookPiece::is_valid_move(const string source_square, const string destinati
       if (!is_empty(square))
 	return 0;
     }
-    if (!is_empty(destination_square)) {
-      board->capture();
-    }
+    check_capture(destination_square);
     return 1;
   }
 
@@ -296,9 +289,7 @@ bool RookPiece::is_valid_move(const string source_square, const string destinati
       if (!is_empty(square))
 	return 0;
     }
-    if (!is_empty(destination_square)) {
-      board->capture();
-    }
+    check_capture(destination_square);
     return 1;
   }
 
@@ -353,9 +344,7 @@ bool PawnPiece::is_valid_move(const string source_square, const string destinati
   // move to a square occupied by an opponent's piece which is diagonally in front of it on an adjacent file, capturing that piece
   if ((abs(source_square[0] - destination_square[0]) == 1) &&
       (abs(source_square[1] - destination_square[1]) == 1)) {
-    if (!is_empty(destination_square)) {
-      board->capture();
-    }
+    check_capture(destination_square);
     return 1;
   }
 

@@ -17,11 +17,13 @@ class ChessPiece {
   Type type;
   Colour colour;
   ChessBoard *board;
+  void check_capture(const string square);
  public:
   ChessPiece(Type _t, Colour _c, ChessBoard *_b);
   virtual ~ChessPiece();
   Colour get_colour();
   string print_colour();
+  Type get_type();
   string print_type();
   string get_symbol();
   virtual bool is_valid_move(const string source_square, const string destination_square) = 0;

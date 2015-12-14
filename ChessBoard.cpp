@@ -2,11 +2,7 @@
 using namespace std;
 
 ChessBoard::ChessBoard() {
-  initialisePosition();
-  turn = White;
-  capture_sign = 0;
-  cout << "A new chess game is started!\n\n";
-  printBoard();
+  initialise_board();
 }
 
 ChessBoard::~ChessBoard() {
@@ -23,8 +19,17 @@ ChessPiece* ChessBoard::operator [](string pos) {
   return this->position[pos];
 }
 
+void ChessBoard::initialise_board() {
+  initialise_position();
+  turn = White;
+  capture_sign = 0;
+  black_king_pos = "D8";
+  white_king_pos = "D1";
+  captured_piece = NULL;
+  cout << "A new chess game is started!\n\n";
+}
 
-void ChessBoard::initialisePosition() {
+void ChessBoard::initialise_position() {
   position.insert (make_pair("A8", new RookPiece(Black, this)));
   position.insert (make_pair("B8", new KnightPiece(Black, this)));
   position.insert (make_pair("C8", new BishopPiece(Black, this)));
@@ -67,6 +72,79 @@ void ChessBoard::initialisePosition() {
 
 }
 
+void ChessBoard::switch_turn() {
+  if (turn == Black)
+    turn = White;
+  else
+    turn = Black;
+}
+
+void ChessBoard::move(const string source_square, const string destination_square) {
+  ChessPiece *temp_piece = position[source_square];
+  position[source_square] = NULL;
+  position[destination_square] = temp_piece;
+}
+
+void ChessBoard::move_capture(const string source_square, const string destination_square) {
+  ChessPiece *temp_piece = position[source_square];
+  captured_piece = position[destination_square];
+  position[source_square] = NULL;
+  position[destination_square] = temp_piece;
+}
+
+void ChessBoard::undo_capture(const string old_source_square, const string old_destination_square) {
+  position[old_source_square] = position[old_destination_square];
+  position[old_destination_square] = captured_piece;
+  captured_piece = NULL;
+}
+
+void ChessBoard::capture() {
+  capture_sign = (capture_sign) ? 0 : 1;
+}
+
+bool ChessBoard::find_king(Colour colour) {
+  map<string, ChessPiece*>::iterator it = position.begin();
+  while(it != position.end()) {
+    if (it->second != NULL) {
+      if ((it->second->get_type() == King) && (it->second->get_colour() == colour)) {
+	if (colour == Black) {
+	  black_king_pos = it->first;
+	} else {
+	  white_king_pos = it->first;
+	}
+	return 1;
+      }
+    }
+    it++;
+  }
+  return 0;
+}
+
+bool ChessBoard::king_in_check(Colour colour) {
+  find_king(colour);
+  map<string, ChessPiece*>::iterator it = position.begin();
+  string king_position = (colour == Black) ? black_king_pos : white_king_pos;
+  while (it != position.end()) {
+    if (it->second != NULL) {
+      if ((it->second->get_colour() != colour) &&
+	  (it->second->is_valid_move(it->first, king_position))) {
+	capture();
+	return 1;
+      }
+    }
+    it++;
+  }
+  return 0;
+}
+
+Type ChessBoard::get_piece_type(string pos) {
+  return position[pos]->get_type();
+}
+
+Colour ChessBoard::get_piece_colour(string pos) {
+  return position[pos]->get_colour();
+}
+
 void ChessBoard::printBoard() {
   cout << "    ";
   char mysquare[3];
@@ -91,23 +169,6 @@ void ChessBoard::printBoard() {
   cout << "  +---+---+---+---+---+---+---+---+" << endl;
 }
 
-void ChessBoard::move(const string source_square, const string destination_square) {
-  ChessPiece *temp_piece = position[source_square];
-  position[source_square] = NULL;
-  position[destination_square] = temp_piece;
-}
-
-void ChessBoard::capture() {
-  capture_sign = (capture_sign) ? 0 : 1;
-}
-
-void ChessBoard::switch_turn() {
-  if (turn == Black)
-    turn = White;
-  else
-    turn = Black;
-}
-
 void ChessBoard::submitMove(const string source_square, const string destination_square) {
   if (!valid_square(source_square) || !valid_square(destination_square)) {
     cerr << "Square invalid!\n";
@@ -117,12 +178,19 @@ void ChessBoard::submitMove(const string source_square, const string destination
     cout << "There is no piece at position " << source_square << "!\n";
     return;
   }
+  if (source_square == destination_square) {
+    cout << "The destination square has to be different "
+	 << "from the source square!\n";
+    return;
+  }
   if (position[source_square]->get_colour() != turn) {
-    cout << "It is not " << position[source_square]->print_colour() << "'s turn to move!\n";
+    cout << "It is not " << position[source_square]->print_colour() 
+	 << "'s turn to move!\n";
     return;
   }
 
-
+  capture_sign = 0;
+  captured_piece = NULL;
 
   if (!position[source_square]->is_valid_move(source_square, destination_square)) {
     cout << position[source_square]->print_colour() << "'s "
@@ -131,20 +199,51 @@ void ChessBoard::submitMove(const string source_square, const string destination
     return;
   }
 
+  // It is illegal to make a move that would put your own king in check
+  if (capture_sign) {
+    move_capture(source_square, destination_square);
+    if (king_in_check(turn)) {
+      undo_capture(source_square, destination_square);
+      cout << position[source_square]->print_colour() << "'s "
+	   << position[source_square]->print_type() << " cannot move to "
+	   << destination_square << "!\n";
+      return;
+    }
+  } else {
+    move(source_square, destination_square); 
+    if (king_in_check(turn)) {
+      move(destination_square, source_square);
+      cout << position[source_square]->print_colour() << "'s "
+	   << position[source_square]->print_type() << " cannot move to "
+	   << destination_square << "!\n";
+      return;
+    }
+  }
+
   // Reaching this point means it is a valid move
-  
-  cout << position[source_square]->print_colour() << "'s "
-       << position[source_square]->print_type() << " moves from "
+  cout << position[destination_square]->print_colour() << "'s "
+       << position[destination_square]->print_type() << " moves from "
        << source_square << " to " << destination_square;
   if (capture_sign) {
-    cout << " taking " << position[destination_square]->print_colour() << "'s "
-	 << position[destination_square]->print_type() << endl;
-    capture();
+    cout << " taking " << captured_piece->print_colour() << "'s "
+	 << captured_piece->print_type() << endl;
   } else {
     cout << endl;
   }
 
-  move(source_square, destination_square); 
+  switch (turn) {
+  case Black:
+    if (king_in_check(White)) { // and not checkmate
+      cout << "White is in check\n";
+      break;
+    }
+  case White:
+    if (king_in_check(Black)) { // and not checkmate
+      cout << "Black is in check\n";
+      break;
+    }
+  }
+
   switch_turn();
 }
 
@@ -157,11 +256,6 @@ void ChessBoard::resetBoard() {
     position.erase(it);
     it++;
   }
-  initialisePosition();
-  turn = White;
-  capture_sign = 0;
-  cout << "A new chess game is started!\n\n";
-  printBoard();
-
+  initialise_board();
 }
 

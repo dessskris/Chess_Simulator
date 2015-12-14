@@ -1,4 +1,12 @@
 #include "ChessBoard.h"
+#include "ChessPiece.h"
+#include "KingPiece.h"
+#include "QueenPiece.h"
+#include "BishopPiece.h"
+#include "KnightPiece.h"
+#include "RookPiece.h"
+#include "PawnPiece.h"
+
 using namespace std;
 
 ChessBoard::ChessBoard() {
@@ -26,10 +34,6 @@ void ChessBoard::initialise_board() {
   black_king_pos = "D8";
   white_king_pos = "D1";
   captured_piece = NULL;
-  piece_checking_black = NULL;
-  piece_checking_black_pos = "00";
-  piece_checking_white = NULL;
-  piece_checking_white_pos = "00";
   cout << "A new chess game is started!\n";
 }
 
@@ -195,7 +199,7 @@ Colour ChessBoard::get_piece_colour(string pos) {
   return position[pos]->get_colour();
 }
 
-void ChessBoard::printBoard() {
+void ChessBoard::print_board() {
   cout << "    ";
   char mysquare[3];
   mysquare[2]='\0';
@@ -287,8 +291,6 @@ void ChessBoard::submitMove(const string source_square, const string destination
   switch (turn) {
   case Black:
     if (king_in_check(White)) {
-      piece_checking_white = position[destination_square];
-      piece_checking_white_pos = destination_square;
       if (any_valid_move(White)) {
 	cout << "White is in check\n";
       } else {
@@ -300,8 +302,6 @@ void ChessBoard::submitMove(const string source_square, const string destination
     break;
   case White:
     if (king_in_check(Black)) {
-      piece_checking_black = position[destination_square];
-      piece_checking_black_pos = destination_square;
       if (any_valid_move(Black)) {
 	cout << "Black is in check\n";
       } else {

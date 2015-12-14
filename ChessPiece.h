@@ -1,12 +1,9 @@
 #ifndef CHESSPIECE_H
 #define CHESSPIECE_H
 
-#include <iostream>
 #include <cmath>
-#include <map>
 #include <string>
 #include "helper.h"
-#include "ChessBoard.h"
 
 using namespace std;
 
@@ -17,62 +14,34 @@ class ChessPiece {
   Type type;
   Colour colour;
   ChessBoard *board;
+
+  // Helper function to check if moving to SQUARE will capture a piece
+  // and signals the board. Note the captured piece may be of the same colour
   bool check_capture(const string square);
+
+  // Helper function to check if SQUARE in board is empty
+  bool is_empty(const string square);
+
  public:
   ChessPiece(Type _t, Colour _c, ChessBoard *_b);
   virtual ~ChessPiece();
+
   Colour get_colour();
   string print_colour();
+
   Type get_type();
   string print_type();
-  string get_symbol();
+
+  string get_symbol(); // Used in print_board()
+
+  /* Virtual function to check if this piece can potentially move from
+     SOURCE_SQUARE to DESTINATION_SQUARE.
+     Note:
+     - Both squares are assumed to be valid squares
+     - It is not taken into account whether its own King will be in check
+       after this move
+     - This function does not make the move */
   virtual bool is_valid_move(const string source_square, const string destination_square) = 0;
-  bool is_empty(const string square);
 };
-
-
-class KingPiece : public ChessPiece {
- public:
-  KingPiece(Colour _c, ChessBoard *_b);
-  virtual ~KingPiece();
-  virtual bool is_valid_move(const string source_square, const string destination_square);
-};
-
-class QueenPiece : public ChessPiece {
- public:
-  QueenPiece(Colour _c, ChessBoard *_b);
-  virtual ~QueenPiece();
-  virtual bool is_valid_move(const string source_square, const string destination_square);
-};
-
-class BishopPiece : public ChessPiece {
- public:
-  BishopPiece(Colour _c, ChessBoard *_b);
-  virtual ~BishopPiece();
-  virtual bool is_valid_move(const string source_square, const string destination_square);
-};
-
-class KnightPiece : public ChessPiece {
- public:
-  KnightPiece(Colour _c, ChessBoard *_b);
-  virtual ~KnightPiece();
-  virtual bool is_valid_move(const string source_square, const string destination_square);
-};
-
-class RookPiece : public ChessPiece {
- public:
-  RookPiece(Colour _c, ChessBoard *_b);
-  virtual ~RookPiece();
-  virtual bool is_valid_move(const string source_square, const string destination_square);
-};
-
-class PawnPiece : public ChessPiece {
- public:
-  PawnPiece(Colour _c, ChessBoard *_b);
-  virtual ~PawnPiece();
-  virtual bool is_valid_move(const string source_square, const string destination_square);
-};
-
-
 
 #endif

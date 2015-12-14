@@ -10,16 +10,9 @@ using namespace std;
 enum Colour {Black, White};
 enum Type {King, Queen, Bishop, Knight, Rook, Pawn};
 
+/* Check if SQUARE is a valid square in the format of two characters:
+   A letter between A and H (inclusive), and
+   A number between 1 and 8 (inclusive) */
 bool valid_square(const string square);
-
-
-
-// check square is in the format of A8 or not
-// check square values are valid
-// check check source /= destination
-
-
-
-
 
 #endif
